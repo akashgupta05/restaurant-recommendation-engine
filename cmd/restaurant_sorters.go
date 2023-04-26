@@ -7,7 +7,7 @@ import (
 	"golang.org/x/exp/slices"
 )
 
-type sorter []func(agg *Aggregate) func(user User, availableRestaurants *[]Restaurant)
+type sorter []func(agg *Aggregate) func(availableRestaurants *[]Restaurant)
 
 var restaurantSorters = sorter{
 	sortByFeaturedRestaurantsFunc,
@@ -21,43 +21,43 @@ var restaurantSorters = sorter{
 	sortByAnyCuisineAnyCostFunc,
 }
 
-func sortByFeaturedRestaurantsFunc(agg *Aggregate) func(user User, availableRestaurants *[]Restaurant) {
+func sortByFeaturedRestaurantsFunc(agg *Aggregate) func(availableRestaurants *[]Restaurant) {
 	return agg.sortByFeaturedRestaurants
 }
 
-func sortByPrimaryCuisinePrimaryCostFunc(agg *Aggregate) func(user User, availableRestaurants *[]Restaurant) {
+func sortByPrimaryCuisinePrimaryCostFunc(agg *Aggregate) func(availableRestaurants *[]Restaurant) {
 	return agg.sortByPrimaryCuisinePrimaryCost
 }
 
-func sortByPrimaryCuisineSecondaryCostFunc(agg *Aggregate) func(user User, availableRestaurants *[]Restaurant) {
+func sortByPrimaryCuisineSecondaryCostFunc(agg *Aggregate) func(availableRestaurants *[]Restaurant) {
 	return agg.sortByPrimaryCuisineSecondaryCost
 }
 
-func sortBySecondaryCuisinePrimaryCostFunc(agg *Aggregate) func(user User, availableRestaurants *[]Restaurant) {
+func sortBySecondaryCuisinePrimaryCostFunc(agg *Aggregate) func(availableRestaurants *[]Restaurant) {
 	return agg.sortBySecondaryCuisinePrimaryCost
 }
 
-func sortByNewRestaurantsByRatingsFunc(agg *Aggregate) func(user User, availableRestaurants *[]Restaurant) {
+func sortByNewRestaurantsByRatingsFunc(agg *Aggregate) func(availableRestaurants *[]Restaurant) {
 	return agg.sortByNewRestaurantsByRatings
 }
 
-func sortByPrimaryCuisinePrimaryCostWithLessRatingFunc(agg *Aggregate) func(user User, availableRestaurants *[]Restaurant) {
+func sortByPrimaryCuisinePrimaryCostWithLessRatingFunc(agg *Aggregate) func(availableRestaurants *[]Restaurant) {
 	return agg.sortByPrimaryCuisinePrimaryCostWithLessRating
 }
 
-func sortByPrimaryCuisineSecondaryCostWithLessRatingFunc(agg *Aggregate) func(user User, availableRestaurants *[]Restaurant) {
+func sortByPrimaryCuisineSecondaryCostWithLessRatingFunc(agg *Aggregate) func(availableRestaurants *[]Restaurant) {
 	return agg.sortByPrimaryCuisineSecondaryCostWithLessRating
 }
 
-func sortBySecondaryCuisinePrimaryCostWithLessRatingFunc(agg *Aggregate) func(user User, availableRestaurants *[]Restaurant) {
+func sortBySecondaryCuisinePrimaryCostWithLessRatingFunc(agg *Aggregate) func(availableRestaurants *[]Restaurant) {
 	return agg.sortBySecondaryCuisinePrimaryCostWithLessRating
 }
 
-func sortByAnyCuisineAnyCostFunc(agg *Aggregate) func(user User, availableRestaurants *[]Restaurant) {
+func sortByAnyCuisineAnyCostFunc(agg *Aggregate) func(availableRestaurants *[]Restaurant) {
 	return agg.sortByAnyCuisineAnyCost
 }
 
-func (agg *Aggregate) sortByFeaturedRestaurants(user User, availableRestaurants *[]Restaurant) {
+func (agg *Aggregate) sortByFeaturedRestaurants(availableRestaurants *[]Restaurant) {
 	for _, restaurant := range *availableRestaurants {
 		if restaurant.isRecommended && restaurant.cuisine == agg.primaryCuisine && restaurant.costBracket == agg.primaryCost {
 			agg.setRestaurantId(restaurant.restaurantId)
@@ -82,7 +82,7 @@ func (agg *Aggregate) sortByFeaturedRestaurants(user User, availableRestaurants 
 	}
 }
 
-func (agg *Aggregate) sortByNewRestaurantsByRatings(user User, availableRestaurants *[]Restaurant) {
+func (agg *Aggregate) sortByNewRestaurantsByRatings(availableRestaurants *[]Restaurant) {
 	sortFunc := func(i, j int) bool {
 		if (*availableRestaurants)[i].rating == (*availableRestaurants)[j].rating {
 			return (*availableRestaurants)[i].onboardedTime.After((*availableRestaurants)[j].onboardedTime)
@@ -113,7 +113,7 @@ func (agg *Aggregate) sortByNewRestaurantsByRatings(user User, availableRestaura
 	}
 }
 
-func (agg *Aggregate) sortByPrimaryCuisinePrimaryCost(user User, availableRestaurants *[]Restaurant) {
+func (agg *Aggregate) sortByPrimaryCuisinePrimaryCost(availableRestaurants *[]Restaurant) {
 	for _, restaurant := range *availableRestaurants {
 		if restaurant.cuisine == agg.primaryCuisine && restaurant.costBracket == agg.primaryCost && restaurant.rating >= SECONDARY_HIGH_RATING {
 
@@ -125,7 +125,7 @@ func (agg *Aggregate) sortByPrimaryCuisinePrimaryCost(user User, availableRestau
 	}
 }
 
-func (agg *Aggregate) sortByPrimaryCuisinePrimaryCostWithLessRating(user User, availableRestaurants *[]Restaurant) {
+func (agg *Aggregate) sortByPrimaryCuisinePrimaryCostWithLessRating(availableRestaurants *[]Restaurant) {
 	for _, restaurant := range *availableRestaurants {
 		if restaurant.cuisine == agg.primaryCuisine && restaurant.costBracket == agg.primaryCost && restaurant.rating < SECONDARY_HIGH_RATING {
 
@@ -137,7 +137,7 @@ func (agg *Aggregate) sortByPrimaryCuisinePrimaryCostWithLessRating(user User, a
 	}
 }
 
-func (agg *Aggregate) sortByPrimaryCuisineSecondaryCost(user User, availableRestaurants *[]Restaurant) {
+func (agg *Aggregate) sortByPrimaryCuisineSecondaryCost(availableRestaurants *[]Restaurant) {
 	for _, restaurant := range *availableRestaurants {
 		if isPrimaryCuisineSecondaryCosts(agg, restaurant.cuisine, restaurant.costBracket) && restaurant.rating >= HIGH_RATING {
 
@@ -149,7 +149,7 @@ func (agg *Aggregate) sortByPrimaryCuisineSecondaryCost(user User, availableRest
 	}
 }
 
-func (agg *Aggregate) sortByPrimaryCuisineSecondaryCostWithLessRating(user User, availableRestaurants *[]Restaurant) {
+func (agg *Aggregate) sortByPrimaryCuisineSecondaryCostWithLessRating(availableRestaurants *[]Restaurant) {
 	for _, restaurant := range *availableRestaurants {
 		if isPrimaryCuisineSecondaryCosts(agg, restaurant.cuisine, restaurant.costBracket) && restaurant.rating < HIGH_RATING {
 
@@ -161,7 +161,7 @@ func (agg *Aggregate) sortByPrimaryCuisineSecondaryCostWithLessRating(user User,
 	}
 }
 
-func (agg *Aggregate) sortBySecondaryCuisinePrimaryCost(user User, availableRestaurants *[]Restaurant) {
+func (agg *Aggregate) sortBySecondaryCuisinePrimaryCost(availableRestaurants *[]Restaurant) {
 	for _, restaurant := range *availableRestaurants {
 		if isSecondaryCuisinesPrimaryCost(agg, restaurant.cuisine, restaurant.costBracket) && restaurant.rating >= HIGH_RATING {
 
@@ -173,7 +173,7 @@ func (agg *Aggregate) sortBySecondaryCuisinePrimaryCost(user User, availableRest
 	}
 }
 
-func (agg *Aggregate) sortBySecondaryCuisinePrimaryCostWithLessRating(user User, availableRestaurants *[]Restaurant) {
+func (agg *Aggregate) sortBySecondaryCuisinePrimaryCostWithLessRating(availableRestaurants *[]Restaurant) {
 	for _, restaurant := range *availableRestaurants {
 		if isSecondaryCuisinesPrimaryCost(agg, restaurant.cuisine, restaurant.costBracket) && restaurant.rating < HIGH_RATING {
 
@@ -185,7 +185,7 @@ func (agg *Aggregate) sortBySecondaryCuisinePrimaryCostWithLessRating(user User,
 	}
 }
 
-func (agg *Aggregate) sortByAnyCuisineAnyCost(user User, availableRestaurants *[]Restaurant) {
+func (agg *Aggregate) sortByAnyCuisineAnyCost(availableRestaurants *[]Restaurant) {
 	for _, restaurant := range *availableRestaurants {
 
 		agg.setRestaurantId(restaurant.restaurantId)

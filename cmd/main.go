@@ -53,7 +53,7 @@ func getRestaurantRecommendations(user User, availableRestaurants []Restaurant) 
 	agg.setCuisines(user.cuisines)
 
 	for _, sorter := range restaurantSorters {
-		sorter(&agg)(user, &availableRestaurants)
+		sorter(&agg)(&availableRestaurants)
 		if ok := agg.circuitBreaker(); ok {
 			break
 		}
